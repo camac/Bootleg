@@ -20,6 +20,21 @@ public class BootleggedXspLibrary extends AbstractXspLibrary {
 	}
 
 	@Override
+	public String[] getDependencies() {
+
+		String[] depends = new String[] {
+				/*
+				 * If your custom controls use contros from other libraries,
+				 * it is probably a good idea to list them here
+				 * e.g. for extlib below can be uncommented
+				 */
+				
+				//com.ibm.xsp.extlib.library",
+		};
+		return depends;
+	}
+
+	@Override
 	public String[] getXspConfigFiles() {
 
 		String[] configs = new String[] {};
