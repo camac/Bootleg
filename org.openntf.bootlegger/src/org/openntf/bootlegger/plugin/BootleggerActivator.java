@@ -92,6 +92,7 @@ public class BootleggerActivator extends AbstractUIPlugin {
 		
 			try {
 
+				@SuppressWarnings("unused")
 				boolean success = new java.io.File(System.getProperty("user.home"), ".bootleg").mkdirs();			
 				this.logHandler = new FileHandler("%h/.bootleg/bootleg-log.%u.%g.xml", 1024 * 1024, 10, false);
 				

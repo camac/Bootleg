@@ -32,7 +32,7 @@
          </run>
       </runtime>
       <builder
-            id="org.openntf.bootleg.BootleggerBuilder">
+            id="org.openntf.bootlegger.BootleggerBuilder">
       </builder>
    </extension>
       
@@ -124,7 +124,7 @@
             name="Remove Bootlegger">
       </command>
       <command
-            id="gerorg.openntf.bootlegger.commands.bootleg"
+            id="org.openntf.bootlegger.commands.bootleg"
             name="Bootleg">
       </command>
       <command

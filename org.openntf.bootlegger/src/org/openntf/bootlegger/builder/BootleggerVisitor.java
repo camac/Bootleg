@@ -9,7 +9,6 @@
 package org.openntf.bootlegger.builder;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
@@ -17,19 +16,14 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.openntf.bootlegger.util.BootleggerUtil;
 
-import com.ibm.designer.domino.ide.resources.project.IDominoDesignerProject;
-import com.ibm.designer.domino.team.util.SyncUtil;
-
 public class BootleggerVisitor implements IResourceDeltaVisitor {
 
 	private IProgressMonitor monitor = null;
 	private BootleggerBuilder builder = null;
-	private IDominoDesignerProject designerProject = null;
 
 	public BootleggerVisitor(IProgressMonitor monitor, BootleggerBuilder builder) {
 		this.monitor = monitor;
 		this.builder = builder;
-		this.designerProject = builder.getDesignerProject();
 	}
 
 	private void processDeletedDesignerFile(IResource designerFile) throws CoreException {
