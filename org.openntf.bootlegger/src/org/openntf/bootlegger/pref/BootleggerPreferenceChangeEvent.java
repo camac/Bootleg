@@ -6,28 +6,38 @@
  *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License
  *******************************************************************************/
-package org.openntf.bootleg.handlers;
+package org.openntf.bootlegger.pref;
 
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.ui.handlers.HandlerUtil;
-import org.openntf.bootleg.util.BootlegUtil;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.ibm.designer.domino.team.action.AbstractTeamHandler;
+public class BootleggerPreferenceChangeEvent {
+	protected int type;
+	protected Map<Object, Object> properties = new HashMap<Object, Object>();
+	private Object sender;
 
-public class RemoveBootlegHandler extends AbstractTeamHandler {
-
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-
-		processSelectedProject(HandlerUtil.getCurrentSelection(event));
-
-		if (this.desProject != null) {
-			BootlegUtil.removeNature(this.desProject.getProject());			
-		}
-
-		return null;
-		
+	public BootleggerPreferenceChangeEvent(int type, Object sender) {
+		this.type = type;
+		this.sender = sender;
 	}
 
+	public Object getSender() {
+		return this.sender;
+	}
+
+	public int getType() {
+		return this.type;
+	}
+
+	public Map<Object, Object> getProperties() {
+		return this.properties;
+	}
+
+	public Object getProperty(Object key) {
+		return this.properties.get(key);
+	}
+
+	public void addProperty(Object key, Object value) {
+		this.properties.put(key, value);
+	}
 }

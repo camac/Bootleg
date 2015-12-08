@@ -6,7 +6,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License
  *******************************************************************************/
-package org.openntf.bootleg;
+package org.openntf.bootlegger.plugin;
 
 import java.io.IOException;
 import java.util.logging.FileHandler;
@@ -14,26 +14,26 @@ import java.util.logging.Level;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.openntf.bootleg.util.BootlegUtil;
+import org.openntf.bootlegger.util.BootleggerUtil;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class BootlegActivator extends AbstractUIPlugin {
+public class BootleggerActivator extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.openntf.bootleg"; //$NON-NLS-1$
+	public static final String PLUGIN_ID = "org.openntf.bootlegger"; //$NON-NLS-1$
 
 	// The shared instance
-	private static BootlegActivator plugin;
+	private static BootleggerActivator plugin;
 	
 	private FileHandler logHandler = null;
 	
 	/**
 	 * The constructor
 	 */
-	public BootlegActivator() {
+	public BootleggerActivator() {
 	}
 
 	/*
@@ -46,7 +46,7 @@ public class BootlegActivator extends AbstractUIPlugin {
 		
 		System.out.println("Bootleg Activated");
 		
-		BootlegUtil.BOOTLEG_LOG.getLogger().setLevel(Level.INFO);
+		BootleggerUtil.BOOTLEG_LOG.getLogger().setLevel(Level.INFO);
 		
 		
 	}
@@ -70,7 +70,7 @@ public class BootlegActivator extends AbstractUIPlugin {
 	 *
 	 * @return the shared instance
 	 */
-	public static BootlegActivator getDefault() {
+	public static BootleggerActivator getDefault() {
 		return plugin;
 	}
 

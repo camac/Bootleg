@@ -6,7 +6,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License
  *******************************************************************************/
-package org.openntf.bootleg.pref;
+package org.openntf.bootlegger.pref;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
@@ -16,14 +16,14 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.openntf.bootleg.BootlegActivator;
-import org.openntf.bootleg.util.BootlegUtil;
+import org.openntf.bootlegger.plugin.BootleggerActivator;
+import org.openntf.bootlegger.util.BootleggerUtil;
 
 import com.bdaum.overlayPages.FieldEditorOverlayPage;
 
-public class BootlegPreferencePage extends FieldEditorOverlayPage implements IWorkbenchPreferencePage {
+public class BootleggerPreferencePage extends FieldEditorOverlayPage implements IWorkbenchPreferencePage {
 
-	public static final String PAGE_ID = "org.openntf.bootleg.bootlegPage";
+	public static final String PAGE_ID = "org.openntf.bootlegger.bootleggerPage";
 
 	public static final String PREF_AUTOEXPORT = "autoExport";
 	public static final String PREF_PLUGIN_SOURCEFOLDER = "pluginSourceFolder";
@@ -35,13 +35,13 @@ public class BootlegPreferencePage extends FieldEditorOverlayPage implements IWo
 	public static final String PREF_CATEGORY = "targetCategory";
 	public static final String PREF_CONFIGCLASSNAME = "configClassName";
 	
-	public BootlegPreferencePage() {
+	public BootleggerPreferencePage() {
 		super(FieldEditorPreferencePage.GRID);
 	}
 
 	@Override
 	protected IPreferenceStore doGetPreferenceStore() {
-		IPreferenceStore store = BootlegActivator.getDefault().getPreferenceStore();
+		IPreferenceStore store = BootleggerActivator.getDefault().getPreferenceStore();
 		return store;
 	}
 
@@ -69,7 +69,7 @@ public class BootlegPreferencePage extends FieldEditorOverlayPage implements IWo
 		StringFieldEditor packageConfig = new StringFieldEditor(PREF_PACKAGE_CONFIG, "Package to export Xsp-Config to", getFieldEditorParent());
 		addField(packageConfig);
 
-		StringFieldEditor configClass = new StringFieldEditor(PREF_CONFIGCLASSNAME, "Class name of Generated XspLibrary Contributor Class (Defaults to '" +BootlegUtil.DEFAULT_CONFIGCLASSNAME +  "')", getFieldEditorParent());
+		StringFieldEditor configClass = new StringFieldEditor(PREF_CONFIGCLASSNAME, "Class name of Generated XspLibrary Contributor Class (Defaults to '" +BootleggerUtil.DEFAULT_CONFIGCLASSNAME +  "')", getFieldEditorParent());
 		addField(configClass);
 
 		StringFieldEditor namespace = new StringFieldEditor(PREF_NAMESPACE, "Target Namespace (leave blank if no change)", getFieldEditorParent());

@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: OpenNTF Bootleg Plugin
-Bundle-SymbolicName: org.openntf.bootleg;singleton:=true
+Bundle-Name: OpenNTF Bootlegger Plugin
+Bundle-SymbolicName: org.openntf.bootlegger;singleton:=true
 Bundle-Version: 0.1.0.qualifier
-Bundle-Activator: org.openntf.bootleg.BootlegActivator
+Bundle-Activator: org.openntf.bootlegger.plugin.BootleggerActivator
 Bundle-Vendor: OpenNTF
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -23,6 +23,10 @@ Require-Bundle: org.eclipse.ui,
  com.ibm.designer.domino.xsp.editor
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Export-Package: org.openntf.bootleg,
- org.openntf.bootleg.builder
+Export-Package: org.openntf.bootlegger.action,
+ org.openntf.bootlegger.builder,
+ org.openntf.bootlegger.handlers,
+ org.openntf.bootlegger.plugin,
+ org.openntf.bootlegger.pref,
+ org.openntf.bootlegger.util
 Import-Package: com.ibm.commons.util

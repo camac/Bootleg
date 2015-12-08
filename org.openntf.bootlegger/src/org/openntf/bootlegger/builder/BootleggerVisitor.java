@@ -6,7 +6,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License
  *******************************************************************************/
-package org.openntf.bootleg.builder;
+package org.openntf.bootlegger.builder;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -15,38 +15,38 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.openntf.bootleg.util.BootlegUtil;
+import org.openntf.bootlegger.util.BootleggerUtil;
 
 import com.ibm.designer.domino.ide.resources.project.IDominoDesignerProject;
 import com.ibm.designer.domino.team.util.SyncUtil;
 
-public class BootlegVisitor implements IResourceDeltaVisitor {
+public class BootleggerVisitor implements IResourceDeltaVisitor {
 
 	private IProgressMonitor monitor = null;
-	private BootlegBuilder builder = null;
+	private BootleggerBuilder builder = null;
 	private IDominoDesignerProject designerProject = null;
 
-	public BootlegVisitor(IProgressMonitor monitor, BootlegBuilder builder) {
+	public BootleggerVisitor(IProgressMonitor monitor, BootleggerBuilder builder) {
 		this.monitor = monitor;
 		this.builder = builder;
 		this.designerProject = builder.getDesignerProject();
 	}
 
 	private void processDeletedDesignerFile(IResource designerFile) throws CoreException {
-		if (BootlegUtil.shouldExport(designerFile)) {
+		if (BootleggerUtil.shouldExport(designerFile)) {
 			builder.deleteCustomControl(designerFile, monitor);
 		} else {
-			BootlegUtil.logTrace("Not Configured to delete " + designerFile.getName());
+			BootleggerUtil.logTrace("Not Configured to delete " + designerFile.getName());
 		}
 
 	}
 
 	private void processDesignerFile(IResource designerFile) throws CoreException {
 
-		if (BootlegUtil.shouldExport(designerFile)) {
+		if (BootleggerUtil.shouldExport(designerFile)) {
 			builder.exportCustomControl(designerFile, monitor);
 		} else {
-			BootlegUtil.logTrace("Not Configured to Export " + designerFile.getName());
+			BootleggerUtil.logTrace("Not Configured to Export " + designerFile.getName());
 		}
 
 	}
@@ -54,7 +54,7 @@ public class BootlegVisitor implements IResourceDeltaVisitor {
 	private boolean processAdded(IResourceDelta delta) {
 		try {
 
-			BootlegUtil.logTrace("Processing Added");
+			BootleggerUtil.logTrace("Processing Added");
 
 			if (delta.getResource() instanceof IFile) {
 
@@ -71,7 +71,7 @@ public class BootlegVisitor implements IResourceDeltaVisitor {
 
 	private boolean processChanged(IResourceDelta delta) {
 
-		BootlegUtil.logTrace("Processing Changed");
+		BootleggerUtil.logTrace("Processing Changed");
 
 		try {
 
@@ -90,7 +90,7 @@ public class BootlegVisitor implements IResourceDeltaVisitor {
 
 	private boolean processDeleted(IResourceDelta delta) {
 
-		BootlegUtil.logTrace("Processing Changed");
+		BootleggerUtil.logTrace("Processing Changed");
 
 		try {
 
@@ -111,7 +111,7 @@ public class BootlegVisitor implements IResourceDeltaVisitor {
 	@Override
 	public boolean visit(IResourceDelta delta) throws CoreException {
 
-		BootlegUtil.logTrace("Visiting: " + delta.getResource().getName());
+		BootleggerUtil.logTrace("Visiting: " + delta.getResource().getName());
 
 		switch (delta.getKind()) {
 		case IResourceDelta.ADDED:

@@ -12,34 +12,34 @@
 <plugin>
 
    <extension
-         id="BootlegBuilder"
-         name="Bootleg Builder"
+         id="BootleggerBuilder"
+         name="Bootlegger Builder"
          point="org.eclipse.core.resources.builders">
       <builder
             hasNature="true">
          <run
-               class="org.openntf.bootleg.builder.BootlegBuilder">
+               class="org.openntf.bootlegger.builder.BootleggerBuilder">
          </run>
       </builder>
    </extension>
    <extension
-         id="bootlegNature"
-         name="Bootleg Metadata Filter Nature"
+         id="bootleggerNature"
+         name="Bootlegger Nature"
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
-               class="org.openntf.bootleg.builder.BootlegNature">
+               class="org.openntf.bootlegger.builder.BootleggerNature">
          </run>
       </runtime>
       <builder
-            id="org.openntf.bootleg.BootlegBuilder">
+            id="org.openntf.bootleg.BootleggerBuilder">
       </builder>
    </extension>
       
    
    <extension
-         id="bootlegProblem"
-         name="Bootleg Problem"
+         id="bootleggerProblem"
+         name="Bootlegger Problem"
          point="org.eclipse.core.resources.markers">
       <super
             type="org.eclipse.core.resources.problemmarker">
@@ -51,9 +51,9 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            class="org.openntf.bootleg.pref.BootlegPreferencePage"
-            id="org.openntf.bootleg.bootlegPage"
-            name="Bootleg">
+            class="org.openntf.bootlegger.pref.BootleggerPreferencePage"
+            id="org.openntf.bootlegger.bootleggerPage"
+            name="Bootlegger">
       </page>
    </extension>
 
@@ -62,20 +62,20 @@
       <menuContribution
             locationURI="popup:org.eclipse.ui.popup.any?after=additions">
          <menu
-               id="org.openntf.bootleg.menuPopupNsf"
-               label="Bootleg">
+               id="org.openntf.bootlegger.menuPopupNsf"
+               label="Bootlegger">
             <command
-                  commandId="org.openntf.bootleg.commands.addbootleg"
+                  commandId="org.openntf.bootlegger.commands.addbootlegger"
                   mode="FORCE_TEXT"
                   style="push">
             </command>
             <command
-                  commandId="org.openntf.bootleg.commands.removebootleg"
+                  commandId="org.openntf.bootlegger.commands.removebootlegger"
                   mode="FORCE_TEXT"
                   style="push">
             </command>
             <command
-                  commandId="org.openntf.bootleg.commands.bootleg"
+                  commandId="org.openntf.bootlegger.commands.bootleg"
                   mode="FORCE_TEXT"
                   style="push">
             </command>
@@ -84,29 +84,29 @@
       <menuContribution
             locationURI="menu:file?after=additions2">
          <menu
-               id="org.openntf.bootleg.menuFileNsf"
-               label="Bootleg">
+               id="org.openntf.bootlegger.menuFileNsf"
+               label="Bootlegger">
             <command
-                  commandId="org.openntf.bootleg.commands.addbootleg"
+                  commandId="org.openntf.bootlegger.commands.addbootlegger"
                   mode="FORCE_TEXT"
                   style="push">
             </command>
             <command
-                  commandId="org.openntf.bootleg.commands.removebootleg"
+                  commandId="org.openntf.bootlegger.commands.removebootlegger"
                   mode="FORCE_TEXT"
                   style="push">
             </command>
             <separator
-                  name="org.openntf.bootleg.separator1"
+                  name="org.openntf.bootlegger.separator1"
                   visible="true">
             </separator>
             <command
-                  commandId="org.openntf.bootleg.commands.startLogging"
+                  commandId="org.openntf.bootlegger.commands.startLogging"
                   mode="FORCE_TEXT"
                   style="push">
             </command>
             <command
-                  commandId="org.openntf.bootleg.commands.stopLogging"
+                  commandId="org.openntf.bootlegger.commands.stopLogging"
                   mode="FORCE_TEXT"
                   style="push">
             </command>
@@ -116,31 +116,31 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            id="org.openntf.bootleg.commands.addbootleg"
-            name="Add Bootleg">
+            id="org.openntf.bootlegger.commands.addbootlegger"
+            name="Add Bootlegger">
       </command>
       <command
-            id="org.openntf.bootleg.commands.removebootleg"
-            name="Remove Bootleg">
+            id="org.openntf.bootlegger.commands.removebootlegger"
+            name="Remove Bootlegger">
       </command>
       <command
-            id="org.openntf.bootleg.commands.bootleg"
+            id="gerorg.openntf.bootlegger.commands.bootleg"
             name="Bootleg">
       </command>
       <command
-            id="org.openntf.bootleg.commands.stopLogging"
+            id="org.openntf.bootlegger.commands.stopLogging"
             name="Stop Logging">
       </command>
       <command
-            id="org.openntf.bootleg.commands.startLogging"
+            id="org.openntf.bootlegger.commands.startLogging"
             name="Start Logging">
       </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="org.openntf.bootleg.handlers.AddBootlegHandler"
-            commandId="org.openntf.bootleg.commands.addbootleg">
+            class="org.openntf.bootlegger.handlers.AddBootleggerHandler"
+            commandId="org.openntf.bootlegger.commands.addbootlegger">
          <enabledWhen>
          
           <with variable="selection">
@@ -158,8 +158,8 @@
          </enabledWhen>
       </handler>
       <handler
-            class="org.openntf.bootleg.handlers.RemoveBootlegHandler"
-            commandId="org.openntf.bootleg.commands.removebootleg">
+            class="org.openntf.bootlegger.handlers.RemoveBootleggerHandler"
+            commandId="org.openntf.bootlegger.commands.removebootlegger">
                      <enabledWhen>
                      
                      <with variable="selection">
@@ -176,8 +176,8 @@
             
       </handler>
       <handler
-            class="org.openntf.bootleg.action.BootlegAction"
-            commandId="org.openntf.bootleg.commands.bootleg">
+            class="org.openntf.bootlegger.action.BootleggerAction"
+            commandId="org.openntf.bootlegger.commands.bootleg">
          <enabledWhen>
             <with
                   variable="selection">
@@ -196,20 +196,20 @@
          </enabledWhen>
       </handler>
       <handler
-            class="org.openntf.bootleg.handlers.StartLoggingHandler"
-            commandId="org.openntf.bootleg.commands.startLogging">
+            class="org.openntf.bootlegger.handlers.StartLoggingHandler"
+            commandId="org.openntf.bootlegger.commands.startLogging">
       </handler>
       <handler
-            class="org.openntf.bootleg.handlers.StopLoggingHandler"
-            commandId="org.openntf.bootleg.commands.stopLogging">
+            class="org.openntf.bootlegger.handlers.StopLoggingHandler"
+            commandId="org.openntf.bootlegger.commands.stopLogging">
       </handler>
    </extension>
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            class="org.openntf.bootleg.pref.BootlegPreferencePage"
-            id="org.openntf.bootleg.bootlegPropertyPage"
-            name="Bootleg">
+            class="org.openntf.bootlegger.pref.BootleggerPreferencePage"
+            id="org.openntf.bootlegger.bootlegPropertyPage"
+            name="Bootlegger">
          <enabledWhen>
             <and>
                <instanceof
@@ -219,7 +219,7 @@
                      type="org.eclipse.core.resources.IResource">
                   <test
                         property="org.eclipse.core.resources.projectNature"
-                        value="org.openntf.bootleg.bootlegNature">
+                        value="org.openntf.bootlegger.bootleggerNature">
                   </test>
                </adapt>
             </and>

@@ -6,7 +6,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License
  *******************************************************************************/
-package org.openntf.bootleg.builder;
+package org.openntf.bootlegger.builder;
 
 import java.util.Iterator;
 
@@ -19,7 +19,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
-import org.openntf.bootleg.util.BootlegUtil;
+import org.openntf.bootlegger.util.BootleggerUtil;
 
 public class ToggleNatureAction implements IObjectActionDelegate {
 	private ISelection selection_;
@@ -27,7 +27,7 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 	@Override
 	public void run(IAction action) {
 		
-		BootlegUtil.logInfo("Running Toggle Nature Action");
+		BootleggerUtil.logInfo("Running Toggle Nature Action");
 		
 		if (selection_ instanceof IStructuredSelection) {
 			for (Iterator<?> it = ((IStructuredSelection) selection_).iterator(); it.hasNext();) {
@@ -41,7 +41,7 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 				if (project != null) {
 					toggleNature(project);
 				} else {
-					BootlegUtil.logInfo("Project was null");
+					BootleggerUtil.logInfo("Project was null");
 				}
 			}
 		}
@@ -65,13 +65,13 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 	 */
 	private void toggleNature(IProject project) {
 		
-		BootlegUtil.logInfo("Attempt to toggle Nature");
+		BootleggerUtil.logInfo("Attempt to toggle Nature");
 		try {					
 			IProjectDescription description = project.getDescription();
 			String[] natures = description.getNatureIds();
 
 			for (int i = 0; i < natures.length; ++i) {
-				if (BootlegNature.NATURE_ID.equals(natures[i])) {
+				if (BootleggerNature.NATURE_ID.equals(natures[i])) {
 					// Remove the nature
 					String[] newNatures = new String[natures.length - 1];
 					System.arraycopy(natures, 0, newNatures, 0, i);
@@ -85,17 +85,17 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 			// Add the nature
 			String[] newNatures = new String[natures.length + 1];
 			System.arraycopy(natures, 0, newNatures, 0, natures.length);
-			newNatures[natures.length] = BootlegNature.NATURE_ID;
+			newNatures[natures.length] = BootleggerNature.NATURE_ID;
 			description.setNatureIds(newNatures);
 			project.setDescription(description, null);
 		} catch (CoreException e) {
 			
-			BootlegUtil.logInfo(e.getMessage());
+			BootleggerUtil.logInfo(e.getMessage());
 			e.printStackTrace();
 			
 		} catch (Exception e) {
 			
-			BootlegUtil.logInfo(e.getMessage());
+			BootleggerUtil.logInfo(e.getMessage());
 			e.printStackTrace();
 			
 		}

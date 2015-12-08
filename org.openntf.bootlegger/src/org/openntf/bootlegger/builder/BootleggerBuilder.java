@@ -6,7 +6,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License
  *******************************************************************************/
-package org.openntf.bootleg.builder;
+package org.openntf.bootlegger.builder;
 
 import java.io.IOException;
 import java.util.Map;
@@ -20,25 +20,25 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.openntf.bootleg.action.BootlegAction;
-import org.openntf.bootleg.util.BootlegUtil;
+import org.openntf.bootlegger.action.BootleggerAction;
+import org.openntf.bootlegger.util.BootleggerUtil;
 
 import com.ibm.designer.domino.ide.resources.DominoResourcesPlugin;
 import com.ibm.designer.domino.ide.resources.NsfException;
 import com.ibm.designer.domino.ide.resources.project.IDominoDesignerProject;
 
-public class BootlegBuilder extends IncrementalProjectBuilder {
+public class BootleggerBuilder extends IncrementalProjectBuilder {
 
-	public static final String BUILDER_ID = "org.openntf.bootleg.BootlegBuilder";
+	public static final String BUILDER_ID = "org.openntf.bootlegger.BootleggerBuilder";
 
 	IDominoDesignerProject designerProject = null;
-	BootlegAction bootlegAction = null;
+	BootleggerAction bootlegAction = null;
 
-	public BootlegBuilder() {
+	public BootleggerBuilder() {
 
 	}
 
-	public BootlegBuilder(IDominoDesignerProject designerProject) {
+	public BootleggerBuilder(IDominoDesignerProject designerProject) {
 		this.designerProject = designerProject;
 	}
 
@@ -49,7 +49,7 @@ public class BootlegBuilder extends IncrementalProjectBuilder {
 	public void initialize() {
 
 		if (this.designerProject != null) {
-			this.bootlegAction = new BootlegAction();
+			this.bootlegAction = new BootleggerAction();
 			this.bootlegAction.setProject(this.designerProject);
 		}
 
@@ -59,7 +59,7 @@ public class BootlegBuilder extends IncrementalProjectBuilder {
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 			throws CoreException {
 
-		BootlegUtil.logInfo("**** Running Bootleg Builder");
+		BootleggerUtil.logInfo("**** Running Bootleg Builder");
 
 		try {
 			this.designerProject = DominoResourcesPlugin
@@ -73,14 +73,14 @@ public class BootlegBuilder extends IncrementalProjectBuilder {
 			return null;
 		}
 
-		if (!BootlegUtil.isAutoExport(this.designerProject.getProject())) {
-			BootlegUtil.logInfo("Bootleg is not set to AutoExport. Exiting");
+		if (!BootleggerUtil.isAutoExport(this.designerProject.getProject())) {
+			BootleggerUtil.logInfo("Bootleg is not set to AutoExport. Exiting");
 			return null;
 		}
 
 		initialize();
 
-		BootlegUtil.cleanMarkers(this.designerProject.getProject());
+		BootleggerUtil.cleanMarkers(this.designerProject.getProject());
 
 		if (!bootlegAction.checkSetup()) {
 			return null;
@@ -97,7 +97,7 @@ public class BootlegBuilder extends IncrementalProjectBuilder {
 					return null;
 				}
 
-				delta.accept(new BootlegVisitor(monitor, this));
+				delta.accept(new BootleggerVisitor(monitor, this));
 
 				ResourcesPlugin.getWorkspace().save(false, monitor);
 
@@ -170,7 +170,7 @@ public class BootlegBuilder extends IncrementalProjectBuilder {
 		try {
 			this.bootlegAction.generateConfig();
 		} catch (IOException e) {
-			BootlegUtil.logError(e.getMessage());
+			BootleggerUtil.logError(e.getMessage());
 		}
 
 	}

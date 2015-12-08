@@ -6,7 +6,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License
  *******************************************************************************/
-package org.openntf.bootleg.action;
+package org.openntf.bootlegger.action;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -53,7 +53,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.openntf.bootleg.util.BootlegUtil;
+import org.openntf.bootlegger.util.BootleggerUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -67,7 +67,7 @@ import com.ibm.designer.domino.ide.resources.project.IDominoDesignerProject;
 import com.ibm.designer.domino.team.action.AbstractTeamHandler;
 import com.ibm.designer.domino.team.util.SyncUtil;
 
-public class BootlegAction extends AbstractTeamHandler {
+public class BootleggerAction extends AbstractTeamHandler {
 
 	private List<IFile> filesTofilter = new ArrayList<IFile>();
 
@@ -80,7 +80,7 @@ public class BootlegAction extends AbstractTeamHandler {
 	private String configClassName = null;
 	private String exportRegex = null;
 
-	public BootlegAction() {
+	public BootleggerAction() {
 
 	}
 
@@ -90,24 +90,24 @@ public class BootlegAction extends AbstractTeamHandler {
 
 		if (prj != null) {
 
-			this.pluginSourceFolder = BootlegUtil.getPluginSourceFolder(prj);
-			this.componentPackage = BootlegUtil.getComponentPackage(prj);
-			this.configPackage = BootlegUtil.getConfigPackage(prj);
-			this.configClassName = BootlegUtil.getConfigClassName(prj);
-			this.exportRegex = BootlegUtil.getCustomControlRegex(prj);
-			this.targetNamespace = BootlegUtil.getTargetNamespace(prj);
-			this.targetPrefix = BootlegUtil.getTargetPrefix(prj);
-			this.targetCategory = BootlegUtil.getTargetCategory(prj);
+			this.pluginSourceFolder = BootleggerUtil.getPluginSourceFolder(prj);
+			this.componentPackage = BootleggerUtil.getComponentPackage(prj);
+			this.configPackage = BootleggerUtil.getConfigPackage(prj);
+			this.configClassName = BootleggerUtil.getConfigClassName(prj);
+			this.exportRegex = BootleggerUtil.getCustomControlRegex(prj);
+			this.targetNamespace = BootleggerUtil.getTargetNamespace(prj);
+			this.targetPrefix = BootleggerUtil.getTargetPrefix(prj);
+			this.targetCategory = BootleggerUtil.getTargetCategory(prj);
 
 		} else {
-			BootlegUtil
+			BootleggerUtil
 					.logError("DesignerProject.getProject() is null, couldn't retrieve Bootleg settings");
 		}
 
 	}
 
 	private void addProjectErrorMarker(String message) {
-		BootlegUtil.addMarker(this.desProject.getProject(), message,
+		BootleggerUtil.addMarker(this.desProject.getProject(), message,
 				Marker.SEVERITY_ERROR);
 	}
 
@@ -119,7 +119,7 @@ public class BootlegAction extends AbstractTeamHandler {
 		// Check Source Folder exists
 		if (StringUtil.isEmpty(getPluginSourceFolder())) {
 
-			BootlegUtil.logError("Source Plugin Folder is not set");
+			BootleggerUtil.logError("Source Plugin Folder is not set");
 			addProjectErrorMarker("Plugin Source Folder is not set");
 			allgood = false;
 
@@ -132,7 +132,7 @@ public class BootlegAction extends AbstractTeamHandler {
 				String msg = String.format(
 						"Plugin Source Folder: '%s' does not exist",
 						getPluginSourceFolder());
-				BootlegUtil.logError(msg);
+				BootleggerUtil.logError(msg);
 				addProjectErrorMarker(msg);
 				allgood = false;
 			} else {
@@ -143,7 +143,7 @@ public class BootlegAction extends AbstractTeamHandler {
 
 		if (StringUtil.isEmpty(getComponentPackage())) {
 			String msg = "Package for Components is not Set";
-			BootlegUtil.logError(msg);
+			BootleggerUtil.logError(msg);
 			addProjectErrorMarker(msg);
 			allgood = false;
 		} else if (sourcefolderexists) {
@@ -154,7 +154,7 @@ public class BootlegAction extends AbstractTeamHandler {
 				String msg = String
 						.format("Folder for Component package: '%s' does not exist in Plugin Source Folder",
 								getComponentPackage());
-				BootlegUtil.logError(msg);
+				BootleggerUtil.logError(msg);
 				addProjectErrorMarker(msg);
 				allgood = false;
 			}
@@ -163,7 +163,7 @@ public class BootlegAction extends AbstractTeamHandler {
 
 		if (StringUtil.isEmpty(getConfigPackage())) {
 			String msg = "Package for Config Files is not Set";
-			BootlegUtil.logError(msg);
+			BootleggerUtil.logError(msg);
 			addProjectErrorMarker(msg);
 			allgood = false;
 		} else if (sourcefolderexists) {
@@ -174,7 +174,7 @@ public class BootlegAction extends AbstractTeamHandler {
 				String msg = String
 						.format("Folder for Config Package: '%s' does not exist in Plugin Source Folder",
 								getConfigPackage());
-				BootlegUtil.logError(msg);
+				BootleggerUtil.logError(msg);
 				addProjectErrorMarker(msg);
 				allgood = false;
 			}
@@ -579,12 +579,12 @@ public class BootlegAction extends AbstractTeamHandler {
 
 		String ccName = designerResource.getName();
 
-		BootlegUtil.logTrace("About To Export" + ccName);
+		BootleggerUtil.logTrace("About To Export" + ccName);
 
 		if (StringUtil.isNotEmpty(exportRegex)) {
 
 			if (!ccName.matches(exportRegex)) {
-				BootlegUtil.logTrace("Custom Control '" + ccName
+				BootleggerUtil.logTrace("Custom Control '" + ccName
 						+ "' not exported as it does not match regex '"
 						+ exportRegex + "'");
 				return;
@@ -594,7 +594,7 @@ public class BootlegAction extends AbstractTeamHandler {
 
 		try {
 
-			BootlegUtil.logInfo("Exporting " + designerResource.getName());
+			BootleggerUtil.logInfo("Exporting " + designerResource.getName());
 
 			IFile javaFile = findCustomControlJava(designerResource);
 
@@ -659,11 +659,11 @@ public class BootlegAction extends AbstractTeamHandler {
 	public void deleteCustomControl(IResource designerResource,
 			IProgressMonitor monitor) {
 
-		BootlegUtil.logTrace("About To Delete" + designerResource.getName());
+		BootleggerUtil.logTrace("About To Delete" + designerResource.getName());
 
 		try {
 
-			BootlegUtil.logInfo("Exporting " + designerResource.getName());
+			BootleggerUtil.logInfo("Exporting " + designerResource.getName());
 
 			String javaName = getJavaNameFromCustomControl(designerResource);
 			File targetJavaFile = getTargetJavaFile(javaName);
@@ -682,13 +682,13 @@ public class BootlegAction extends AbstractTeamHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		BootlegUtil.logInfo("**** Performing Explicit Filtering");
+		BootleggerUtil.logInfo("**** Performing Explicit Filtering");
 
 		processSelection(event);
 
 		if (this.desProject == null) {
 
-			BootlegUtil.logError("Could not determine the Designer Project");
+			BootleggerUtil.logError("Could not determine the Designer Project");
 
 			return null;
 		}
@@ -697,13 +697,13 @@ public class BootlegAction extends AbstractTeamHandler {
 
 		for (IFile designerFile : filesTofilter) {
 
-			BootlegUtil.logTrace(designerFile.getName()
+			BootleggerUtil.logTrace(designerFile.getName()
 					+ " has been explicitly told to Export - Export It");
 
-			if (BootlegUtil.shouldExport(designerFile)) {
+			if (BootleggerUtil.shouldExport(designerFile)) {
 				exportCustomControl(designerFile, new NullProgressMonitor());
 			} else {
-				BootlegUtil.logTrace("Not Configured to Export "
+				BootleggerUtil.logTrace("Not Configured to Export "
 						+ designerFile.getName());
 			}
 
@@ -755,7 +755,7 @@ public class BootlegAction extends AbstractTeamHandler {
 						this.desProject = DominoResourcesPlugin
 								.getDominoDesignerProject(project);
 					} catch (NsfException e) {
-						BootlegUtil.logError(e.getMessage());
+						BootleggerUtil.logError(e.getMessage());
 					}
 				}
 

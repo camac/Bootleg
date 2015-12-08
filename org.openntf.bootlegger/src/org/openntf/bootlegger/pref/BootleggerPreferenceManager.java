@@ -6,7 +6,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License
  *******************************************************************************/
-package org.openntf.bootleg.pref;
+package org.openntf.bootlegger.pref;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -17,22 +17,22 @@ import java.util.Set;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.swt.widgets.Display;
-import org.openntf.bootleg.BootlegActivator;
+import org.openntf.bootlegger.plugin.BootleggerActivator;
 
 import com.ibm.commons.util.StringUtil;
 
-public class BootlegPreferenceManager extends PreferenceManager {
+public class BootleggerPreferenceManager extends PreferenceManager {
 
 	private IPreferenceStore store;
-	private List<IBootlegPreferenceListener> listeners = new ArrayList<IBootlegPreferenceListener>();
-	private static BootlegPreferenceManager instance = new BootlegPreferenceManager();
+	private List<IBootleggerPreferenceListener> listeners = new ArrayList<IBootleggerPreferenceListener>();
+	private static BootleggerPreferenceManager instance = new BootleggerPreferenceManager();
 
-	public static BootlegPreferenceManager getInstance() {
+	public static BootleggerPreferenceManager getInstance() {
 		return instance;
 	}
 
-	protected BootlegPreferenceManager() {
-		this.store = BootlegActivator.getDefault().getPreferenceStore();
+	protected BootleggerPreferenceManager() {
+		this.store = BootleggerActivator.getDefault().getPreferenceStore();
 	}
 
 	public IPreferenceStore getPreferenceStore() {
@@ -60,7 +60,7 @@ public class BootlegPreferenceManager extends PreferenceManager {
 		if (!StringUtil.equals(oldVal, newValue)) {
 
 			if (notifyListeners) {
-				BootlegPreferenceChangeEvent event = new BootlegPreferenceChangeEvent(
+				BootleggerPreferenceChangeEvent event = new BootleggerPreferenceChangeEvent(
 						paramInt, prefKey);
 				event.addProperty("old.value", oldVal);
 				event.addProperty("new.value", newValue);
@@ -90,7 +90,7 @@ public class BootlegPreferenceManager extends PreferenceManager {
 		this.store.setValue(prefKey, value);
 	}
 
-	protected void notifyListeners(final BootlegPreferenceChangeEvent event) {
+	protected void notifyListeners(final BootleggerPreferenceChangeEvent event) {
 
 		Runnable local1 = new Runnable() {
 
@@ -98,7 +98,7 @@ public class BootlegPreferenceManager extends PreferenceManager {
 
 				for (int i = 0; i < listeners.size(); i++) {
 
-					IBootlegPreferenceListener listener = listeners.get(i);
+					IBootleggerPreferenceListener listener = listeners.get(i);
 
 					if (listener != null) {
 						listener.preferenceChanged(event);
@@ -111,13 +111,13 @@ public class BootlegPreferenceManager extends PreferenceManager {
 		Display.getDefault().syncExec(local1);
 	}
 
-	public void addPreferenceListener(IBootlegPreferenceListener listener) {
+	public void addPreferenceListener(IBootleggerPreferenceListener listener) {
 		if (!this.listeners.contains(listener)) {
 			this.listeners.add(listener);
 		}
 	}
 
-	public void removePreferenceListener(IBootlegPreferenceListener listener) {
+	public void removePreferenceListener(IBootleggerPreferenceListener listener) {
 		this.listeners.remove(listener);
 	}
 

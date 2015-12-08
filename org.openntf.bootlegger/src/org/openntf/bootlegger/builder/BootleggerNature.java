@@ -6,14 +6,14 @@
  *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License
  *******************************************************************************/
-package org.openntf.bootleg.builder;
+package org.openntf.bootlegger.builder;
 
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
-import org.openntf.bootleg.util.BootlegUtil;
+import org.openntf.bootlegger.util.BootleggerUtil;
 
 import com.ibm.designer.domino.ide.resources.DominoResourcesPlugin;
 import com.ibm.designer.domino.ide.resources.NsfException;
@@ -21,12 +21,12 @@ import com.ibm.designer.domino.ide.resources.project.IDominoDesignerProject;
 import com.ibm.designer.domino.team.util.SyncUtil;
 import com.ibm.designer.domino.xsp.internal.builder.XFacesBuilder;
 
-public class BootlegNature implements IProjectNature {
+public class BootleggerNature implements IProjectNature {
 
 	/**
 	 * ID of this project nature
 	 */
-	public static final String NATURE_ID = "org.openntf.bootleg.bootlegNature";
+	public static final String NATURE_ID = "org.openntf.bootlegger.bootleggerNature";
 
 	private IProject project;
 
@@ -37,13 +37,13 @@ public class BootlegNature implements IProjectNature {
 	 */
 	public void configure() throws CoreException {
 
-		addBuilderToProject(project, BootlegBuilder.BUILDER_ID, XFacesBuilder.XFACES_BUILDER, false);
+		addBuilderToProject(project, BootleggerBuilder.BUILDER_ID, XFacesBuilder.XFACES_BUILDER, false);
 			
 	}
 
 	public void deconfigure() throws CoreException {
 
-		removeBuilderFromProject(project, BootlegBuilder.BUILDER_ID);
+		removeBuilderFromProject(project, BootleggerBuilder.BUILDER_ID);
 
 	}
 	
@@ -68,7 +68,7 @@ public class BootlegNature implements IProjectNature {
 		}
 
 		if (refBuilderPos == null) {
-			BootlegUtil.logInfo("Could not find the reference builder " + refBuilderId );
+			BootleggerUtil.logInfo("Could not find the reference builder " + refBuilderId );
 			return;
 		}
 		
