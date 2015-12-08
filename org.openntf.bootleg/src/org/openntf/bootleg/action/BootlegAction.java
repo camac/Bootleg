@@ -35,6 +35,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -53,6 +57,7 @@ import org.openntf.bootleg.util.BootlegUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 import com.ibm.commons.util.StringUtil;
@@ -71,6 +76,7 @@ public class BootlegAction extends AbstractTeamHandler {
 	private String configPackage = null;
 	private String targetNamespace = null;
 	private String targetPrefix = null;
+	private String targetCategory = null;
 	private String configClassName = null;
 	private String exportRegex = null;
 
@@ -89,15 +95,20 @@ public class BootlegAction extends AbstractTeamHandler {
 			this.configPackage = BootlegUtil.getConfigPackage(prj);
 			this.configClassName = BootlegUtil.getConfigClassName(prj);
 			this.exportRegex = BootlegUtil.getCustomControlRegex(prj);
+			this.targetNamespace = BootlegUtil.getTargetNamespace(prj);
+			this.targetPrefix = BootlegUtil.getTargetPrefix(prj);
+			this.targetCategory = BootlegUtil.getTargetCategory(prj);
 
 		} else {
-			BootlegUtil.logError("DesignerProject.getProject() is null, couldn't retrieve Bootleg settings");
+			BootlegUtil
+					.logError("DesignerProject.getProject() is null, couldn't retrieve Bootleg settings");
 		}
 
 	}
 
 	private void addProjectErrorMarker(String message) {
-		BootlegUtil.addMarker(this.desProject.getProject(), message, Marker.SEVERITY_ERROR);
+		BootlegUtil.addMarker(this.desProject.getProject(), message,
+				Marker.SEVERITY_ERROR);
 	}
 
 	public boolean checkSetup() {
@@ -118,7 +129,9 @@ public class BootlegAction extends AbstractTeamHandler {
 
 			if (!sourcefolder.exists()) {
 
-				String msg = String.format("Plugin Source Folder: '%s' does not exist", getPluginSourceFolder());
+				String msg = String.format(
+						"Plugin Source Folder: '%s' does not exist",
+						getPluginSourceFolder());
 				BootlegUtil.logError(msg);
 				addProjectErrorMarker(msg);
 				allgood = false;
@@ -138,8 +151,9 @@ public class BootlegAction extends AbstractTeamHandler {
 			File file = getTargetComponentFolder();
 
 			if (!file.exists()) {
-				String msg = String.format("Folder for Component package: '%s' does not exist in Plugin Source Folder",
-						getComponentPackage());
+				String msg = String
+						.format("Folder for Component package: '%s' does not exist in Plugin Source Folder",
+								getComponentPackage());
 				BootlegUtil.logError(msg);
 				addProjectErrorMarker(msg);
 				allgood = false;
@@ -157,8 +171,9 @@ public class BootlegAction extends AbstractTeamHandler {
 			File file = getTargetConfigFolder();
 
 			if (!file.exists()) {
-				String msg = String.format("Folder for Config Package: '%s' does not exist in Plugin Source Folder",
-						getConfigPackage());
+				String msg = String
+						.format("Folder for Config Package: '%s' does not exist in Plugin Source Folder",
+								getConfigPackage());
 				BootlegUtil.logError(msg);
 				addProjectErrorMarker(msg);
 				allgood = false;
@@ -205,7 +220,7 @@ public class BootlegAction extends AbstractTeamHandler {
 
 	private String getConfigClassName() {
 		if (StringUtil.isEmpty(this.configClassName)) {
-			return "BootlegConfig";
+			return "BootleggedConfigs";
 		}
 		return this.configClassName;
 	}
@@ -223,14 +238,17 @@ public class BootlegAction extends AbstractTeamHandler {
 
 	}
 
-	private String getCompositeFileEntryFromCustomControl(IResource designerResource) {
-		String nameOnly = StringUtil.replace(designerResource.getName(), ".xsp", "");
+	private String getCompositeFileEntryFromCustomControl(
+			IResource designerResource) {
+		String nameOnly = StringUtil.replace(designerResource.getName(),
+				".xsp", "");
 		return "/" + getComponentPackageSlashed() + "/" + nameOnly;
 	}
 
 	private String getJavaNameFromCustomControl(IResource designerResource) {
 
-		String javaName = StringUtil.replace(designerResource.getName(), ".xsp", "");
+		String javaName = StringUtil.replace(designerResource.getName(),
+				".xsp", "");
 
 		if (StringUtil.isNotEmpty(javaName)) {
 			String first = javaName.substring(0, 1).toUpperCase();
@@ -244,14 +262,16 @@ public class BootlegAction extends AbstractTeamHandler {
 
 	private String getXspConfigNameFromCustomControl(IResource designerResource) {
 
-		String javaName = StringUtil.replace(designerResource.getName(), ".xsp", ".xsp-config");
+		String javaName = StringUtil.replace(designerResource.getName(),
+				".xsp", ".xsp-config");
 		return javaName;
 
 	}
 
 	private String getJavaName(IResource designerResource) {
 
-		String ccName = StringUtil.replace(designerResource.getName(), ".xsp", "");
+		String ccName = StringUtil.replace(designerResource.getName(), ".xsp",
+				"");
 
 		if (StringUtil.isNotEmpty(ccName)) {
 			String first = ccName.substring(0, 1).toUpperCase();
@@ -264,23 +284,14 @@ public class BootlegAction extends AbstractTeamHandler {
 
 	public IFile findCustomControlXspConfig(IResource designerResource) {
 
-		String ccName = StringUtil.replace(designerResource.getName(), ".xsp", ".xsp-config");
+		String ccName = StringUtil.replace(designerResource.getName(), ".xsp",
+				".xsp-config");
 
 		String xcFileName = "/CustomControls/" + ccName;
-
-		System.out.println(xcFileName);
 
 		IFile file = desProject.getProject().getFile(xcFileName);
 
 		if (file != null) {
-
-			System.out.println(file.getName());
-			System.out.println(file.getFullPath());
-
-			if (file.exists()) {
-				System.out.println("XspConfig Exists");
-			}
-
 			return file;
 		}
 
@@ -292,24 +303,13 @@ public class BootlegAction extends AbstractTeamHandler {
 
 		String ccName = getJavaName(designerResource);
 
-		System.out.println(ccName);
-		
 		ccName = ccName.replace("_", "_005f");
 
 		String javaFileName = "/Local/xsp/" + ccName + ".java";
 
-		System.out.println(javaFileName);
-
 		IFile file = desProject.getProject().getFile(javaFileName);
 
 		if (file != null) {
-			System.out.println(file.getName());
-			System.out.println(file.getFullPath());
-
-			if (file.exists()) {
-				System.out.println("It Exists");
-			}
-
 			return file;
 		}
 
@@ -319,7 +319,8 @@ public class BootlegAction extends AbstractTeamHandler {
 
 	public File getTargetConfigFolder() {
 
-		String path = getPluginSourceFolderForwardSlash() + "/" + getConfigPackageSlashed();
+		String path = getPluginSourceFolderForwardSlash() + "/"
+				+ getConfigPackageSlashed();
 		File file = new File(path);
 		return file;
 
@@ -327,8 +328,9 @@ public class BootlegAction extends AbstractTeamHandler {
 
 	public File getTargetConfigFile() {
 
-		if (StringUtil.isEmpty(getConfigClassName())) return null;
-		
+		if (StringUtil.isEmpty(getConfigClassName()))
+			return null;
+
 		String configFile = getConfigClassName() + ".java";
 		File file = new File(getTargetConfigFolder(), configFile);
 		return file;
@@ -337,7 +339,8 @@ public class BootlegAction extends AbstractTeamHandler {
 
 	public File getTargetComponentFolder() {
 
-		String path = getPluginSourceFolderForwardSlash() + "/" + getComponentPackageSlashed();
+		String path = getPluginSourceFolderForwardSlash() + "/"
+				+ getComponentPackageSlashed();
 		File file = new File(path);
 		return file;
 
@@ -380,7 +383,8 @@ public class BootlegAction extends AbstractTeamHandler {
 				while ((line = reader.readLine()) != null) {
 
 					if (StringUtil.startsWithIgnoreCase(line, "package xsp;")) {
-						line = String.format("package %s;", getComponentPackage());
+						line = String.format("package %s;",
+								getComponentPackage());
 					}
 
 					writer.write(String.format("%s%n", line));
@@ -457,11 +461,16 @@ public class BootlegAction extends AbstractTeamHandler {
 		return this.targetPrefix;
 	}
 
+	private String getTargetCategory() {
+		return this.targetCategory;
+	}
+
 	private void modifyXspConfig(File targetXspConfig, String compositeFile) {
 
 		try {
 
-			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilderFactory docFactory = DocumentBuilderFactory
+					.newInstance();
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 			Document doc = docBuilder.parse(targetXspConfig);
 
@@ -489,9 +498,66 @@ public class BootlegAction extends AbstractTeamHandler {
 				compFile.setTextContent(compositeFile);
 			}
 
+			// Modify the Control Palette Category
+			if (StringUtil.isNotEmpty(getTargetCategory())) {
+
+				String xpath1 = "/faces-config/composite-component/composite-extension/designer-extension";
+				String xpath2 = "/faces-config/composite-component/composite-extension/designer-extension/category";
+
+				XPath x = XPathFactory.newInstance().newXPath();
+
+				try {
+
+					NodeList list = (NodeList) x.evaluate(xpath2,
+							doc.getDocumentElement(), XPathConstants.NODESET);
+
+					Node catNode = list.item(0);
+					
+					if (catNode != null) {
+
+						String text = catNode.getTextContent();
+						
+						if (StringUtil.isEmpty(text)) {
+							
+							catNode.setTextContent(getTargetCategory());
+							
+						}
+
+						
+					} else {
+
+						list = (NodeList) x.evaluate(xpath1,
+								doc.getDocumentElement(),
+								XPathConstants.NODESET);
+
+						Node node = list.item(0);
+
+						if (node != null) {
+
+							catNode = doc.createElement("category");
+							Text catText = doc.createTextNode(getTargetCategory());
+							catNode.appendChild(catText);
+							
+							node.appendChild(catNode);
+							
+						}
+						
+					}
+
+				} catch (XPathExpressionException e) {
+					e.printStackTrace();
+				}
+
+			}
+
 			// write the content into xml file
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			TransformerFactory transformerFactory = TransformerFactory
+					.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
+			
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+			
 			DOMSource source = new DOMSource(doc);
 			StreamResult result = new StreamResult(targetXspConfig);
 			transformer.transform(source, result);
@@ -508,16 +574,18 @@ public class BootlegAction extends AbstractTeamHandler {
 
 	}
 
-	public void exportCustomControl(IResource designerResource, IProgressMonitor monitor) {
+	public void exportCustomControl(IResource designerResource,
+			IProgressMonitor monitor) {
 
 		String ccName = designerResource.getName();
-		
+
 		BootlegUtil.logTrace("About To Export" + ccName);
 
-		if (exportRegex != null) {
+		if (StringUtil.isNotEmpty(exportRegex)) {
 
 			if (!ccName.matches(exportRegex)) {
-				BootlegUtil.logTrace("Custom Control '" + ccName + "' not exported as it does not match regex '"
+				BootlegUtil.logTrace("Custom Control '" + ccName
+						+ "' not exported as it does not match regex '"
 						+ exportRegex + "'");
 				return;
 			}
@@ -588,7 +656,8 @@ public class BootlegAction extends AbstractTeamHandler {
 
 	}
 
-	public void deleteCustomControl(IResource designerResource, IProgressMonitor monitor) {
+	public void deleteCustomControl(IResource designerResource,
+			IProgressMonitor monitor) {
 
 		BootlegUtil.logTrace("About To Delete" + designerResource.getName());
 
@@ -628,14 +697,22 @@ public class BootlegAction extends AbstractTeamHandler {
 
 		for (IFile designerFile : filesTofilter) {
 
-			BootlegUtil.logTrace(designerFile.getName() + " has been explicitly told to Export - Export It");
+			BootlegUtil.logTrace(designerFile.getName()
+					+ " has been explicitly told to Export - Export It");
 
 			if (BootlegUtil.shouldExport(designerFile)) {
 				exportCustomControl(designerFile, new NullProgressMonitor());
 			} else {
-				BootlegUtil.logTrace("Not Configured to Export " + designerFile.getName());
+				BootlegUtil.logTrace("Not Configured to Export "
+						+ designerFile.getName());
 			}
 
+		}
+		try {
+			generateConfig();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		return super.execute(event);
@@ -675,7 +752,8 @@ public class BootlegAction extends AbstractTeamHandler {
 
 				if (DominoResourcesPlugin.isDominoDesignerProject(project)) {
 					try {
-						this.desProject = DominoResourcesPlugin.getDominoDesignerProject(project);
+						this.desProject = DominoResourcesPlugin
+								.getDominoDesignerProject(project);
 					} catch (NsfException e) {
 						BootlegUtil.logError(e.getMessage());
 					}
@@ -734,26 +812,33 @@ public class BootlegAction extends AbstractTeamHandler {
 
 		fw.write(String.format("/*%n"));
 		fw.write(String.format("* This Java File was generated by Bootleg%n"));
-		fw.write(String.format("* If you modify it you will probably lose changes!%n"));
+		fw.write(String
+				.format("* If you modify it you will probably lose changes!%n"));
 		fw.write(String.format("*/%n"));
 
 		fw.write(String.format("package %s;%n%n", packageName));
 		fw.write(String.format("public class %s {%n%n", getConfigClassName()));
 
 		// Stolen from ExtlibConfig
-		fw.write(String.format("\tpublic static String[] concat(String[] s1, String[] s2) {%n%n"));
-		fw.write(String.format("\t\tString[] s = new String[s1.length + s2.length];%n"));
-		fw.write(String.format("\t\tSystem.arraycopy(s1, 0, s, 0, s1.length);%n"));
-		fw.write(String.format("\t\tSystem.arraycopy(s2, 0, s, s1.length, s2.length);%n"));
+		fw.write(String
+				.format("\tpublic static String[] concat(String[] s1, String[] s2) {%n%n"));
+		fw.write(String
+				.format("\t\tString[] s = new String[s1.length + s2.length];%n"));
+		fw.write(String
+				.format("\t\tSystem.arraycopy(s1, 0, s, 0, s1.length);%n"));
+		fw.write(String
+				.format("\t\tSystem.arraycopy(s2, 0, s, s1.length, s2.length);%n"));
 		fw.write(String.format("\t\treturn s;%n"));
 		fw.write(String.format("\t}%n%n"));
 
 		// add the Config Files
-		fw.write(String.format("\tpublic static String[] addXspConfigFiles(String[] files) {%n%n"));
+		fw.write(String
+				.format("\tpublic static String[] addXspConfigFiles(String[] files) {%n%n"));
 		fw.write(String.format("\t\treturn concat(files, new String[] {%n"));
 
 		for (String config : configs) {
-			fw.write(String.format("\t\t\t\"%s\",%n", packageNameSlashed + config));
+			fw.write(String.format("\t\t\t\"%s\",%n", packageNameSlashed
+					+ config));
 		}
 
 		fw.write(String.format("\t\t});%n"));

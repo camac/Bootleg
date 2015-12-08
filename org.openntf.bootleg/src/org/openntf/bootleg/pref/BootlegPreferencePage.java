@@ -17,6 +17,7 @@ import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.openntf.bootleg.BootlegActivator;
+import org.openntf.bootleg.util.BootlegUtil;
 
 import com.bdaum.overlayPages.FieldEditorOverlayPage;
 
@@ -31,6 +32,7 @@ public class BootlegPreferencePage extends FieldEditorOverlayPage implements IWo
 	public static final String PREF_CC_EXPORT_REGEX = "customControlRegex"; 
 	public static final String PREF_NAMESPACE = "targetNamespace"; 
 	public static final String PREF_PREFIX = "targetPrefix"; 
+	public static final String PREF_CATEGORY = "targetCategory";
 	public static final String PREF_CONFIGCLASSNAME = "configClassName";
 	
 	public BootlegPreferencePage() {
@@ -67,7 +69,7 @@ public class BootlegPreferencePage extends FieldEditorOverlayPage implements IWo
 		StringFieldEditor packageConfig = new StringFieldEditor(PREF_PACKAGE_CONFIG, "Package to export Xsp-Config to", getFieldEditorParent());
 		addField(packageConfig);
 
-		StringFieldEditor configClass = new StringFieldEditor(PREF_CONFIGCLASSNAME, "Class name of Generated XspLibrary Contributor Class (Defaults to 'BootlegConfig')", getFieldEditorParent());
+		StringFieldEditor configClass = new StringFieldEditor(PREF_CONFIGCLASSNAME, "Class name of Generated XspLibrary Contributor Class (Defaults to '" +BootlegUtil.DEFAULT_CONFIGCLASSNAME +  "')", getFieldEditorParent());
 		addField(configClass);
 
 		StringFieldEditor namespace = new StringFieldEditor(PREF_NAMESPACE, "Target Namespace (leave blank if no change)", getFieldEditorParent());
@@ -75,6 +77,9 @@ public class BootlegPreferencePage extends FieldEditorOverlayPage implements IWo
 
 		StringFieldEditor prefix = new StringFieldEditor(PREF_PREFIX, "Target Default Prefix (leave blank if no change)", getFieldEditorParent());
 		addField(prefix);
+
+		StringFieldEditor category = new StringFieldEditor(PREF_CATEGORY, "Target Palette Category (Only Applied if not already set on Custom Control)", getFieldEditorParent());
+		addField(category);
 		
 	}
 

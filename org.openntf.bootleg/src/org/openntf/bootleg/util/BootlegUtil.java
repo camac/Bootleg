@@ -46,6 +46,7 @@ public class BootlegUtil {
 	public static LogMgr BOOTLEG_LOG = Log.load("org.openntf.bootleg", "Logger used for Bootleg");
 	private static final String MARKER_TYPE = "org.openntf.bootleg.bootlegProblem";
 	private static boolean loggingToFile = false;
+	public static final String DEFAULT_CONFIGCLASSNAME = "BootleggedConfigs"; 
 		
 	public static String getPreferenceKey(IMetaModelDescriptor mmd) {
 		return "bootleg.filter." + mmd.getID();
@@ -166,7 +167,18 @@ public class BootlegUtil {
 		return getOverlayedPreferenceValue(store, resource, pageId, BootlegPreferencePage.PREF_CC_EXPORT_REGEX);
 		
 	}
-
+	
+	public static String getTargetCategory() {
+		return BootlegPreferenceManager.getInstance().getValue(BootlegPreferencePage.PREF_CATEGORY, false);
+	}
+	
+	public static String getTargetCategory(IResource resource) {
+		
+		IPreferenceStore store = BootlegPreferenceManager.getInstance().getPreferenceStore();
+		String pageId = BootlegPreferencePage.PAGE_ID;
+		return getOverlayedPreferenceValue(store, resource, pageId, BootlegPreferencePage.PREF_CATEGORY);
+		
+	}
 	
 	public static Boolean isAutoExport() {
 		return BootlegPreferenceManager.getInstance().getBooleanValue(BootlegPreferencePage.PREF_AUTOEXPORT, false);
