@@ -12,3 +12,5 @@
 hs_err_pid*
 org.openntf.bootleg.updatesite/
 example/org.openntf.xsp.bootlegged/src/rebel.xml
+example/org.openntf.xsp.bootlegged/src/org/openntf/xsp/bootlegged/composite/
+example/org.openntf.xsp.bootlegged/src/org/openntf/xsp/bootlegged/config/
