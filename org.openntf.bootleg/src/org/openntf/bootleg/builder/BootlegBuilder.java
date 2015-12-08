@@ -8,11 +8,9 @@
  *******************************************************************************/
 package org.openntf.bootleg.builder;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import org.eclipse.core.internal.resources.Marker;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -25,18 +23,15 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.openntf.bootleg.action.BootlegAction;
 import org.openntf.bootleg.util.BootlegUtil;
 
-import com.ibm.commons.util.StringUtil;
 import com.ibm.designer.domino.ide.resources.DominoResourcesPlugin;
 import com.ibm.designer.domino.ide.resources.NsfException;
 import com.ibm.designer.domino.ide.resources.project.IDominoDesignerProject;
-import com.ibm.designer.domino.team.util.SyncUtil;
 
 public class BootlegBuilder extends IncrementalProjectBuilder {
 
 	public static final String BUILDER_ID = "org.openntf.bootleg.BootlegBuilder";
 
 	IDominoDesignerProject designerProject = null;
-	IProject diskProject = null;
 	BootlegAction bootlegAction = null;
 
 	public BootlegBuilder() {
@@ -54,50 +49,43 @@ public class BootlegBuilder extends IncrementalProjectBuilder {
 	public void initialize() {
 
 		if (this.designerProject != null) {
-			try {
-				this.diskProject = SyncUtil.getAssociatedDiskProject(this.designerProject, false);
-
-				if (this.diskProject != null) {
-					this.bootlegAction = new BootlegAction();
-					this.bootlegAction.setProject(this.designerProject);
-				}
-			} catch (CoreException e) {
-				e.printStackTrace();
-			}
+			this.bootlegAction = new BootlegAction();
+			this.bootlegAction.setProject(this.designerProject);
 		}
 
 	}
 
 	@SuppressWarnings("rawtypes")
-	protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
+	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
+			throws CoreException {
 
-		BootlegUtil.logTrace("Bootleg: PostSyncBuilder");
-
-		BootlegUtil.logInfo("**** Running Post Sync Builder");
+		BootlegUtil.logInfo("**** Running Bootleg Builder");
 
 		try {
-			this.designerProject = DominoResourcesPlugin.getDominoDesignerProject(getProject());
+			this.designerProject = DominoResourcesPlugin
+					.getDominoDesignerProject(getProject());
 		} catch (NsfException e) {
 			e.printStackTrace();
 		}
 
-		if ((this.designerProject == null) || (!this.designerProject.isProjectInitialized())) {
+		if ((this.designerProject == null)
+				|| (!this.designerProject.isProjectInitialized())) {
 			return null;
 		}
-		
+
 		if (!BootlegUtil.isAutoExport(this.designerProject.getProject())) {
 			BootlegUtil.logInfo("Bootleg is not set to AutoExport. Exiting");
 			return null;
 		}
 
 		initialize();
-		
+
 		BootlegUtil.cleanMarkers(this.designerProject.getProject());
 
 		if (!bootlegAction.checkSetup()) {
 			return null;
 		}
-		
+
 		try {
 
 			IResourceDelta delta = getDelta(getProject());
@@ -114,7 +102,7 @@ public class BootlegBuilder extends IncrementalProjectBuilder {
 				ResourcesPlugin.getWorkspace().save(false, monitor);
 
 				generateBuilderConfig();
-				
+
 			}
 
 		} catch (Exception e) {
@@ -146,7 +134,8 @@ public class BootlegBuilder extends IncrementalProjectBuilder {
 					}
 					break;
 				case 2:
-					IResource localIResource = paramAnonymousIResourceDelta.getResource();
+					IResource localIResource = paramAnonymousIResourceDelta
+							.getResource();
 					if (localIResource.getType() == 1) {
 						arrayOfBoolean[0] = true;
 						return false;
@@ -159,7 +148,8 @@ public class BootlegBuilder extends IncrementalProjectBuilder {
 		return arrayOfBoolean[0];
 	}
 
-	public void exportCustomControl(IResource designerResource, IProgressMonitor monitor) {
+	public void exportCustomControl(IResource designerResource,
+			IProgressMonitor monitor) {
 
 		if (designerResource instanceof IFile) {
 
@@ -167,22 +157,22 @@ public class BootlegBuilder extends IncrementalProjectBuilder {
 
 		}
 	}
-	
-	public void deleteCustomControl(IResource designerResource, IProgressMonitor monitor) {
+
+	public void deleteCustomControl(IResource designerResource,
+			IProgressMonitor monitor) {
 		if (designerResource instanceof IFile) {
 			this.bootlegAction.deleteCustomControl(designerResource, monitor);
 		}
 	}
 
 	public void generateBuilderConfig() {
-		
+
 		try {
 			this.bootlegAction.generateConfig();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-		
+			BootlegUtil.logError(e.getMessage());
+		}
+
 	}
-	
+
 }
