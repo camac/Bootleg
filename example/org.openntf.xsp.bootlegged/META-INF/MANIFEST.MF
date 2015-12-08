@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OpenNTF Bootlegged XspLibrary
+Bundle-SymbolicName: org.openntf.xsp.bootlegged;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.openntf.xsp.bootlegged.plugin.Activator
+Bundle-Vendor: OpenNTF
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.osgi.framework;version="1.3.0"
+Bundle-ActivationPolicy: lazy
+Require-Bundle: com.ibm.xsp.core,
+ com.ibm.commons,
+ com.ibm.xsp.extsn
+Export-Package: org.openntf.xsp.bootlegged.composite,
+ org.openntf.xsp.bootlegged.config,
+ org.openntf.xsp.bootlegged.library,
+ org.openntf.xsp.bootlegged.plugin
