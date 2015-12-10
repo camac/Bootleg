@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.openntf.bootleg.feature"
-      label="OpenNTF Bootleg Feature"
+      id="org.openntf.bootlegger.feature"
+      label="OpenNTF Bootlegger Feature"
       version="1.0.0.qualifier">
 
    <description url="http://www.example.com/description">
@@ -17,7 +17,7 @@
    </license>
 
    <plugin
-         id="org.openntf.bootleg"
+         id="org.openntf.bootlegger"
          download-size="0"
          install-size="0"
          version="0.0.0"
